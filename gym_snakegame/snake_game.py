@@ -167,7 +167,8 @@ class SnakeGameEnv(gym.Env):
 
         self.prev_action = action
 
-        return observation, reward, terminated, False, info
+        truncated = False
+        return observation, reward, terminated, truncated, info
 
     def render(self):
         if self.render_mode is None:
@@ -190,7 +191,28 @@ class SnakeGameEnv(gym.Env):
         return (color, color, color)
     
     def _render_ansi(self):
-        return f"Hello! ${self._score}";
+        result = "";
+        result += f"[ Score {self._score} ]\n"
+
+        horiz = "-"*self.board_size + '\n';
+        result += horiz;
+
+        for r in range(self.board_size):
+            for c in range(self.board_size):
+                if self.board[r,c] == self.ITEM:
+                    result += "●";
+                elif self.board[r,c] == self.HEAD:
+                    result += "█";
+                elif self.board[r,c] == self.BLANK:
+                    result += "░";
+                else:
+                    result += "█"
+
+            result += "\n"
+        
+        result += horiz;
+
+        return result;
 
     def _render_frame(self):
         pygame.font.init()
